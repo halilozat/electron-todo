@@ -47,6 +47,17 @@ app.on('ready', () => {
     ipcMain.on("key:inputValue", (error, data) => {
         console.log(data)
     })
+
+    //Yeni pencere
+    ipcMain.on("key:newWindow", () => {
+        createWindow()
+    })
+
+    //ana pencere kapanırsa uygulamayı kapat : 
+    mainWindow.on('close', () => {
+        app.quit()
+    })
+
 })
 
 mainMenuTemplate = [
@@ -94,3 +105,23 @@ if (process.platform == "darwin") {
     })
 }
 
+
+function createWindow() {
+    addWindow = new BrowserWindow({
+        width: 450,
+        height: 450,
+        title: "Yeni Pencere"
+    })
+
+    addWindow.loadURL(url.format({
+        pathname: path.join(__dirname, "newWindow.html"),
+        protocol: "file",
+        slashes: true
+    }))
+
+    //addWindow bellekte yer kaplamasın diye
+    //addwindow kapanınca null yap
+    addWindow.on('close', () => {
+        addWindow = null;
+    })
+}

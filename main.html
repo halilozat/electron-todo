@@ -14,6 +14,11 @@
         <button class="btn btn-primary" id="sendButton">Gönder</button>
     </div>
 
+    <div class="container">
+        <br>
+        <button class="btn btn-primary" id="newWindowButton">Yeni Bir Pencere Aç</button>
+    </div>
+
     <script>
 
         //haberleşme işlemini electron ile yapıyoruz
@@ -22,6 +27,12 @@
 
         const sendButton = document.querySelector("#sendButton")
         const inputValue = document.querySelector("#value")
+        const newWindowButton = document.querySelector("#newWindowButton")
+
+        newWindowButton.addEventListener("click", () => {
+            ipcRenderer.send("key:newWindow")
+        })
+
 
         sendButton.addEventListener("click", () => {
             ipcRenderer.send("key", "Çıkar telefonunu göster :)")
