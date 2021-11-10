@@ -6,7 +6,7 @@ const url = require("url")
 const path = require("path")
 
 
-const { app, BrowserWindow, Menu } = electron;
+const { app, BrowserWindow, Menu, ipcMain } = electron;
 
 //ana sayfa
 let mainWindow, mainMenu, mainMenuTemplate;
@@ -15,9 +15,15 @@ let mainWindow, mainMenu, mainMenuTemplate;
 app.on('ready', () => {
     console.log("running!")
 
-    console.log(process.platform)
+    //console.log(process.platform)
 
-    mainWindow = new BrowserWindow({})
+    mainWindow = new BrowserWindow({
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    })
+
     mainWindow.loadURL(
         url.format({
             pathname: path.join(__dirname, "main.html"),
@@ -29,9 +35,18 @@ app.on('ready', () => {
     )
 
     mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
-
     //bu menüyü benim uygulamamın menüsü olarak ayarla
     Menu.setApplicationMenu(mainMenu)
+
+
+    //eğer "key" isimli bir event gelirse şuradaki fonksiyonu çalıştır
+    ipcMain.on("key", (error, data) => {
+        console.log(data)
+    })
+
+    ipcMain.on("key:inputValue", (error, data) => {
+        console.log(data)
+    })
 })
 
 mainMenuTemplate = [

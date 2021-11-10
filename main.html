@@ -8,7 +8,28 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Hello</h1>
-    <button class="btn btn-primary">Buton</button>
+    <div class="container">
+        <h1>Selam</h1>
+        <input type="text" id="value">
+        <button class="btn btn-primary" id="sendButton">Gönder</button>
+    </div>
+
+    <script>
+
+        //haberleşme işlemini electron ile yapıyoruz
+        const electron = require("electron")
+        const {ipcRenderer} = electron
+
+        const sendButton = document.querySelector("#sendButton")
+        const inputValue = document.querySelector("#value")
+
+        sendButton.addEventListener("click", () => {
+            ipcRenderer.send("key", "Çıkar telefonunu göster :)")
+
+            ipcRenderer.send("key:inputValue", inputValue.value)
+        })
+
+    </script>
+
 </body>
 </html>
