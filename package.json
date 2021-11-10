@@ -1,0 +1,22 @@
+{
+  "name": "electron-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/halilozat/electron-todo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/halilozat/electron-todo/issues"
+  },
+  "homepage": "https://github.com/halilozat/electron-todo#readme",
+  "dependencies": {
+    "electron": "^15.3.1"
+  }
+}
