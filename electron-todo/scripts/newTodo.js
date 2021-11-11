@@ -11,5 +11,6 @@ cancelButton.addEventListener('click', () => {
 });
 
 saveButton.addEventListener('click', () => {
-    ipcRenderer.send('newTodo:save', inputValue.value);
+    ipcRenderer.send("newTodo:save", { ref: "new", inputValue: inputValue.value })
+
 });

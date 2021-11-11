@@ -2,6 +2,13 @@ const electron = require("electron")
 
 const { ipcRenderer } = electron
 
+const inputValue = document.querySelector("#inputValue")
+document.querySelector("#addButton").addEventListener("click", () => {
+    //ref ile main windowdan geldiğini belirt, close window hatası alma
+    ipcRenderer.send("newTodo:save", { ref: "mainWindow", inputValue: inputValue.value })
+    inputValue.value = ""
+})
+
 ipcRenderer.on("todo:addItem", (error, todo) => {
     //container
     const container = document.querySelector(".todo-container")
@@ -24,12 +31,12 @@ ipcRenderer.on("todo:addItem", (error, todo) => {
     deleteButton.className = "btn btn-sm btn-outline-danger flex-shrink-1"
     deleteButton.innerText = "X"
 
-    deleteButton.addEventListener("click", () => {
+    deleteButton.addEventListener("click", (event) => {
         if (confirm("Silmek istiyor musunuz?")) {
+            //parentNode : bir üst parent'e git
+            event.target.parentNode.parentNode.remove();
         }
     })
-
-
 
     // İçeriden dışarıya doğru yapıyı oluşturuyoruz.
     col.appendChild(p)
