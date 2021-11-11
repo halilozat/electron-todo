@@ -6,7 +6,8 @@ const path = require("path")
 
 const { app, BrowserWindow, Menu, ipcMain } = electron;
 
-let mainWindow, mainMenu, mainMenuTemplate;
+let mainWindow, mainMenu, mainMenuTemplate, addWindow;
+let todoList = []
 
 app.on("ready", () => {
 
@@ -16,6 +17,9 @@ app.on("ready", () => {
             contextIsolation: false
         }
     })
+
+    //pencere boyutunu değiştirmeyi engelleme
+    mainWindow.setResizable(false)
 
     mainWindow.loadURL(
         url.format({
@@ -28,6 +32,26 @@ app.on("ready", () => {
     mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
     Menu.setApplicationMenu(mainMenu)
 
+
+    //newTodo Events
+    ipcMain.on("newTodo:close", () => {
+        addWindow.close()
+        addWindow = null
+    })
+
+    ipcMain.on("newTodo:save", (error, data) => {
+        if (data) {
+            todoList.push({
+                id: todoList.length + 1,
+                text: data
+            })
+            getTodoList()
+            addWindow.close()
+            addWindow = null
+
+        }
+    })
+
 })
 
 mainMenuTemplate = [
@@ -36,7 +60,10 @@ mainMenuTemplate = [
         //altmenu
         submenu: [
             {
-                label: "Yeni Todo Ekle"
+                label: "Yeni Todo Ekle",
+                click() {
+                    createWindow()
+                }
             },
             {
                 label: "Tümünü Sil"
@@ -71,4 +98,37 @@ if (process.platform == "darwin") {
         label: app.getName(),
         role: "TODO"
     })
+}
+
+
+function createWindow() {
+    addWindow = new BrowserWindow({
+        width: 450,
+        height: 250,
+        title: "Yeni Pencere",
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false
+        }
+    })
+
+    //pencere boyutunu değiştirmeyi engelleme
+    addWindow.setResizable(false)
+
+    addWindow.loadURL(url.format({
+        pathname: path.join(__dirname, "pages/newTodo.html"),
+        protocol: "file",
+        slashes: true
+    }))
+
+    //addWindow bellekte yer kaplamasın diye
+    //addwindow kapanınca null yap
+    addWindow.on('close', () => {
+        addWindow = null;
+    })
+}
+
+function getTodoList() {
+    // return todoList;
+    console.log(todoList)
 }

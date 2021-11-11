@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Todo Ekle</title>
+    <link rel="stylesheet" href="../assets/bootstrap.min.css" />
+    <link rel="stylesheet" href="../assets/style.css" />
+</head>
+
+<body>
+    <div class="
+        container-fluid
+        d-flex
+        flex-column
+        justify-content-center
+        align-items-center">
+        <div class="pt-2 pb-2">
+            <div class="card-body">
+                <h5 class="card-title">Todo Ekle</h5>
+                <input type="text" placeholder="todo..." class="form-control mt-3 mb-3" id="inputValue" />
+                <a href="" class="card-link btn btn-sm btn-outline-danger" id="cancelButton">Vazgeç</a>
+                <a href="" class="card-link btn btn-sm btn-outline-warning" id="saveButton">Ekle</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const electron = require('electron');
+        const { ipcRenderer } = electron;
+
+        let cancelButton = document.querySelector('#cancelButton');
+        let saveButton = document.querySelector('#saveButton');
+        let inputValue = document.querySelector('#inputValue');
+
+
+        cancelButton.addEventListener('click', () => {
+            ipcRenderer.send('newTodo:close');
+        });
+
+        saveButton.addEventListener('click', () => {
+            ipcRenderer.send('newTodo:save', inputValue.value);
+        });
+    </script>
+</body>
+
+</html>
