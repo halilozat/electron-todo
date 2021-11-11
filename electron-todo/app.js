@@ -4,7 +4,7 @@ const url = require("url")
 const path = require("path")
 
 
-const { app, BrowserWindow, Menu, ipcMain } = electron;
+const { app, BrowserWindow, Menu, ipcMain, webContents } = electron;
 
 let mainWindow, mainMenu, mainMenuTemplate, addWindow;
 let todoList = []
@@ -14,7 +14,8 @@ app.on("ready", () => {
     mainWindow = new BrowserWindow({
         webPreferences: {
             nodeIntegration: true,
-            contextIsolation: false
+            contextIsolation: false,
+            enableRemoteModule: true
         }
     })
 
@@ -45,13 +46,14 @@ app.on("ready", () => {
                 id: todoList.length + 1,
                 text: data
             })
-            getTodoList()
+
+            mainWindow.webContents.send("todo:addItem", todoList)
+
             addWindow.close()
             addWindow = null
 
         }
     })
-
 })
 
 mainMenuTemplate = [
@@ -126,9 +128,4 @@ function createWindow() {
     addWindow.on('close', () => {
         addWindow = null;
     })
-}
-
-function getTodoList() {
-    // return todoList;
-    console.log(todoList)
 }
