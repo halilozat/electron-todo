@@ -1,15 +1,13 @@
 const electron = require("electron")
-
 const url = require("url")
 const path = require("path")
 
+const { app, BrowserWindow, Menu, ipcMain } = electron
 
-const { app, BrowserWindow, Menu, ipcMain, webContents } = electron;
+let mainWindow, mainMenu, mainMenuTemplate;
 
-let mainWindow, mainMenu, mainMenuTemplate, addWindow;
-let todoList = []
-
-app.on("ready", () => {
+app.on('ready', () => {
+    console.log("Ready !")
 
     mainWindow = new BrowserWindow({
         webPreferences: {
@@ -19,12 +17,9 @@ app.on("ready", () => {
         }
     })
 
-    //pencere boyutunu değiştirmeyi engelleme
-    mainWindow.setResizable(false)
-
     mainWindow.loadURL(
         url.format({
-            pathname: path.join(__dirname, "pages/mainWindow.html"),
+            pathname: path.join(__dirname, "mainWindow.html"),
             protocol: "file",
             slashes: true
         })
@@ -33,49 +28,34 @@ app.on("ready", () => {
     mainMenu = Menu.buildFromTemplate(mainMenuTemplate)
     Menu.setApplicationMenu(mainMenu)
 
+    // ipcMain.on("key", (error, data) => {
+    //     console.log(data)
+    // })
 
-    //newTodo Events
-    ipcMain.on("newTodo:close", () => {
-        addWindow.close()
-        addWindow = null
+    mainWindow.on('close', () => {
+        app.quit()
     })
 
-    ipcMain.on("newTodo:save", (error, data) => {
-        if (data) {
-
-            const todo = {
-                id: todoList.length + 1,
-                text: data.inputValue
-            }
-
-            todoList.push(todo)
-            mainWindow.webContents.send("todo:addItem", todo)
-
-            if (data.ref == "new") {
-                addWindow.close()
-                addWindow = null
-            }
-
-        }
+    ipcMain.on("key:newWindow", () => {
+        createWindow()
     })
+
+    ipcMain.on("key:inputValue", (error, data) => {
+        console.log(data)
+    })
+
+
 })
 
 mainMenuTemplate = [
     {
         label: "Dosya",
-        //altmenu
         submenu: [
             {
-                label: "Yeni Todo Ekle",
-                click() {
-                    createWindow()
-                }
+                label: "Yeni Todo Ekle"
             },
             {
-                label: "Tümünü Sil"
-            },
-            {
-                label: "Çıkış",
+                label: "Çıkış Yap",
                 accelerator: process.path == "darwin" ? "Command+Q" : "Ctrl:Q",
                 role: "quit"
             }
@@ -105,30 +85,21 @@ if (process.platform == "darwin") {
     })
 }
 
-
 function createWindow() {
     addWindow = new BrowserWindow({
         width: 450,
         height: 250,
-        title: "Yeni Pencere",
-        webPreferences: {
-            nodeIntegration: true,
-            contextIsolation: false
-        }
+        title: "Yeni Pencere"
     })
 
-    //pencere boyutunu değiştirmeyi engelleme
-    addWindow.setResizable(false)
-
     addWindow.loadURL(url.format({
-        pathname: path.join(__dirname, "pages/newTodo.html"),
+        pathname: path.join(__dirname, "newWindow.html"),
         protocol: "file",
         slashes: true
     }))
 
-    //addWindow bellekte yer kaplamasın diye
-    //addwindow kapanınca null yap
     addWindow.on('close', () => {
         addWindow = null;
     })
+
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="assets/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Selam</h1>
+        <input type="text" id="value">
+        <button class="btn btn-primary" id="sendButton">Gönder</button>
+    </div>
+
+    <div class="container">
+        <br>
+        <button class="btn btn-primary" id="newWindowButton">Yeni Bir Pencere Aç</button>
+    </div>
+
+
+    <script>
+        const electron = require("electron")
+        const { ipcRenderer } = electron
+
+        const sendButton = document.querySelector("#sendButton")
+        const inputValue = document.querySelector("#value")
+        const newWindowButton = document.querySelector("#newWindowButton")
+
+        newWindowButton.addEventListener("click", () => {
+            ipcRenderer.send("key:newWindow")
+        })
+
+        sendButton.addEventListener("click", () => {
+            ipcRenderer.send("key", "Çıkar telefonunu göster! :)")
+            ipcRenderer.send("key:inputValue", inputValue.value)
+        })
+    </script>
+</body>
+
+</html>
